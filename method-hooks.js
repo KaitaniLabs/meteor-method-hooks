@@ -27,11 +27,7 @@ const registerMethodHook = function(methodNames, position, fn) {
 
 const wrap = function(methodName) {
   let fn;
-  if (Meteor.isServer) {
-    fn = Meteor.server.method_handlers[methodName];
-  } else {
-    fn = Meteor.connection._methodHandlers[methodName];
-  }
+  fn = Meteor.server.method_handlers[methodName];
 
   return function(...args) {
     this._methodName = methodName;
@@ -81,11 +77,7 @@ Meteor.afterAllMethods = fn => allMethodHooks.after.unshift(fn);
 
 Meteor.startup(function() {
   let methodHandlers;
-  if (Meteor.isServer) {
-    methodHandlers = Meteor.server.method_handlers;
-  } else {
-    methodHandlers = Meteor.connection._methodHandlers;
-  }
+  methodHandlers = Meteor.server.method_handlers;
 
   Object.keys(methodHandlers).forEach((method) => {
     methodHandlers[method] = wrap(method);
